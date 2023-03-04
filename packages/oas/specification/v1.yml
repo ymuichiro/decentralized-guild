@@ -1,0 +1,821 @@
+openapi: 3.0.3
+info:
+  version: 0.0.1
+  title: Decentralized-Guild
+  description: About Decentralized Guild System APIs. Please use it when expanding the system.
+  termsOfService: 'https://github.com/ymuichiro/decentralized-guild/blob/main/LICENSE'
+  contact:
+    email: ym.u.ichiro@gmail.com
+    name: E-mail
+    url: 'https://github.com/ymuichiro/decentralized-guild'
+  license:
+    name: MIT
+    url: 'https://github.com/ymuichiro/decentralized-guild/blob/main/LICENSE'
+externalDocs:
+  description: Find out more about Decentralized Guild
+  url: 'https://github.com/ymuichiro/decentralized-guild'
+servers:
+  - url: '/api'
+tags:
+  - name: user
+    description: User
+  - name: quest
+    description: Quest
+  - name: chat
+    description: Chat
+paths:
+  /users:
+    get:
+      tags: [user]
+      summary: get users
+      operationId: GetUsers
+      description: ユーザーの一覧を取得する
+      parameters: [$ref: '#/components/parameters/OffsetPath']
+      responses:
+        '200':
+          $ref: '#/components/responses/GetUsersResponse'
+  /users/{userId}:
+    get:
+      tags: [user]
+      summary: get user info
+      operationId: GetUser
+      description: ユーザー情報を取得する。SessionID と同一の場合のみ email 情報を返す。
+      parameters: [$ref: '#/components/parameters/UserIdPath']
+      responses:
+        '200':
+          description: SUCCESSFUL
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+    put:
+      tags: [user]
+      summary: put user info
+      description: ユーザーの情報を更新する。パブリックキー、プロフィールの更新は別APIにて定義する
+      operationId: PutUser
+      parameters: [$ref: '#/components/parameters/UserIdPath']
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              title: PutUserRequestBody
+              type: object
+              required: [name]
+              properties:
+                name:
+                  type: string
+      responses:
+        '204':
+          description: SUCCESS NO CONTENT
+    delete:
+      tags: [user]
+      summary: delete current user
+      operationId: DeleteUser
+      description: ユーザーの退会処理。パブリックキー情報はサーバー上に残置される。
+      parameters: [$ref: '#/components/parameters/UserIdPath']
+      responses:
+        '204':
+          description: SUCCESS NO CONTENT
+  /users/{userId}/profile:
+    post:
+      tags: [user]
+      summary: post user profile image
+      operationId: PostUserProfileImage
+      description: ユーザーのプロフィールイメージを更新する
+      parameters: [$ref: '#/components/parameters/UserIdPath']
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              title: UpdateUserProfileImageRequest
+              type: object
+              required: [file]
+              properties:
+                file:
+                  type: string
+                  format: binary
+      responses:
+        '204':
+          description: SUCCESS NO CONTENT
+  /users/{userId}/verify:
+    post:
+      tags: [user]
+      summary: post user public key & verify
+      operationId: PostUserPublicKey
+      description: update user publickey after verified
+      parameters: [$ref: '#/components/parameters/UserIdPath']
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              title: PostUserVerifyRequestBody
+              required: [publicKey, encryptedMessage]
+              properties:
+                publicKey:
+                  type: string
+                  description: symbol public-key
+                encryptedMessage:
+                  type: string
+                  description: EncryptedMessage.payload by symbol blockchain
+      responses:
+        '204':
+          description: SUCCESS NO CONTENT
+  /users/{userId}/push:
+    post:
+      tags: [user]
+      summary: regist web push
+      operationId: PostUserPush
+      description: regist web push
+      parameters: [$ref: '#/components/parameters/UserIdPath']
+      requestBody:
+        required: true
+        description: post notice push subscription
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/WebPush'
+      responses:
+        '204':
+          description: SUCSESSFUL NO CONTENT
+  /quests:
+    get:
+      tags: [quest]
+      summary: get quests
+      operationId: GetQuests
+      description: Retrieving the Quest List
+      parameters:
+        - $ref: '#/components/parameters/RequesterPublicKey'
+        - $ref: '#/components/parameters/WorkerPublicKey'
+        - $ref: '#/components/parameters/OffsetPath'
+        - $ref: '#/components/parameters/KeywordQuery'
+      responses:
+        '200':
+          $ref: '#/components/responses/GetQuestsResponse'
+    post:
+      tags: [quest]
+      summary: post quest
+      operationId: post-quest
+      description: Register quest
+      requestBody:
+        $ref: '#/components/requestBodies/QuestUpdate'
+      responses:
+        '200':
+          description: SUCCESS
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Quest'
+  /quests/{questId}:
+    get:
+      tags: [quest]
+      summary: get quest
+      operationId: GetQuest
+      description: Obtaining quest information
+      parameters: [$ref: '#/components/parameters/QuestIdPath']
+      responses:
+        '200':
+          description: SUCCESS
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Quest'
+    put:
+      tags: [quest]
+      summary: put quest
+      operationId: PutQuest
+      description: update quest information
+      parameters: [$ref: '#/components/parameters/QuestIdPath']
+      requestBody:
+        $ref: '#/components/requestBodies/QuestUpdate'
+      responses:
+        '204':
+          description: SUCCESSFUL NO CONTENT
+    delete:
+      tags: [quest]
+      summary: delete quest
+      operationId: DeleteQuest
+      description: 成立済みの場合、削除の受付は行わない
+      parameters: [$ref: '#/components/parameters/QuestIdPath']
+      responses:
+        '204':
+          description: SUCCESSFUL NO CONTENT
+  /quests/{questId}/workers:
+    get:
+      tags: [quest]
+      summary: get quest workers
+      operationId: GetQuestWorkers
+      description: クエストに紐づくワーカーの一覧を取得する
+      parameters: [$ref: '#/components/parameters/QuestIdPath']
+      responses:
+        '200':
+          description: SUCCESSFUL
+          content:
+            application/json:
+              schema:
+                type: object
+                title: GetQuestWorkersResponse
+                required: [data]
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/QuestWorker'
+    post:
+      tags: [quest]
+      summary: post quest worker
+      operationId: PostQuestWorker
+      description: クエストにワーカーを追加する
+      parameters: [$ref: '#/components/parameters/QuestIdPath']
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              title: PostQuestWorkerRequestBody
+              required: [proposal]
+              properties:
+                proposal:
+                  type: string
+      responses:
+        '200':
+          description: SUCCESSFUL
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ChatRoom'
+  /quests/{questId}/workers/{workerId}:
+    get:
+      tags: [quest]
+      summary: get quest worker
+      operationId: GetQuestWorker
+      description: クエストに紐づくワーカーの情報を取得する
+      parameters:
+        - $ref: '#/components/parameters/QuestIdPath'
+        - $ref: '#/components/parameters/WorkerIdPath'
+      responses:
+        '200':
+          description: SUCCESSFUL
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/QuestWorker'
+    put:
+      tags: [quest]
+      summary: put quest worker
+      operationId: PutQuestWorker
+      description: ワーカーによるキャンセル（ステータスが申し込み中の時のみ実行可能）
+      parameters:
+        - $ref: '#/components/parameters/QuestIdPath'
+        - $ref: '#/components/parameters/WorkerIdPath'
+      responses:
+        '204':
+          description: SUCCESSFUL
+  /quests/{questId}/workers/{workerId}/approval:
+    post:
+      tags: [quest]
+      summary: approval quest proposal
+      operationId: PostQuestApproval
+      description: クエスト作成者による提案の承認
+      parameters:
+        - $ref: '#/components/parameters/QuestIdPath'
+        - $ref: '#/components/parameters/WorkerIdPath'
+      responses:
+        '200':
+          description: SUCCESSFUL
+          content:
+            application/json:
+              schema:
+                title: PostQuestApprovalResponse
+                type: object
+                required: [transaction]
+                properties:
+                  transaction:
+                    type: string
+                    description: serialized aggregate complete transaction
+    put:
+      tags: [quest]
+      summary: set transaction status
+      operationId: PutQuestApproval
+      description: 提案の承認時に生成されたトランザクションを署名、アナウンスしたことを伝えるAPI
+      parameters:
+        - $ref: '#/components/parameters/QuestIdPath'
+        - $ref: '#/components/parameters/WorkerIdPath'
+      requestBody:
+        $ref: '#/components/requestBodies/PutQuestApproval'
+      responses:
+        '204':
+          description: SUCCESSFUL
+  /quests/{questId}/workers/{workerId}/completion:
+    post:
+      tags: [quest]
+      summary: post quest worker completion
+      operationId: PostQuestWorkerCompletion
+      description: タスク完了時の検収リクエスト
+      parameters:
+        - $ref: '#/components/parameters/QuestIdPath'
+        - $ref: '#/components/parameters/WorkerIdPath'
+      responses:
+        '204':
+          description: SUCCESSFUL NO CONTENT
+  /quests/{questId}/workers/{workerId}/reward:
+    post:
+      tags: [quest]
+      summary: post quest worker reward
+      operationId: PostQuestWorkerReward
+      description: タスクの完了時に報酬を支払う
+      parameters:
+        - $ref: '#/components/parameters/QuestIdPath'
+        - $ref: '#/components/parameters/WorkerIdPath'
+      responses:
+        '204':
+          description: SUCCESSFUL NO CONTENT
+  /chats:
+    get:
+      tags: [chat]
+      summary: get chat rooms
+      operationId: GetChats
+      description: 自身がアクセス可能なチャットルームの一覧を取得
+      parameters: [$ref: '#/components/parameters/OffsetPath']
+      responses:
+        '200':
+          $ref: '#/components/responses/GetChatRoomsResponse'
+    post:
+      tags: [chat]
+      summary: post chat room
+      operationId: PostChat
+      description: post chat room
+      requestBody:
+        $ref: '#/components/requestBodies/PostChatRoomRequest'
+      responses:
+        '200':
+          description: SUCCESS
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ChatRoom'
+    put:
+      tags: [chat]
+      summary: put all chat room is read
+      operationId: putAllChatRoomIsRead
+      description: put all chat room is read
+      responses:
+        '204':
+          description: SUCCESS
+  /chats/{chatRoomId}:
+    get:
+      tags: [chat]
+      summary: get chat room info
+      operationId: GetChatInfo
+      description: get chat room info
+      parameters: [$ref: '#/components/parameters/ChatRoomIdPath']
+      responses:
+        '200':
+          description: SUCCESSFUL
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ChatRoom'
+    put:
+      tags: [chat]
+      summary: is read chat room
+      operationId: PutChatInfo
+      description: is read chat room
+      parameters: [$ref: '#/components/parameters/ChatRoomIdPath']
+      responses:
+        '204':
+          description: SUCCESSFUL
+  /chats/{chatRoomId}/messages:
+    get:
+      tags: [chat]
+      summary: get chat messages
+      operationId: GetChatMessages
+      description: get chat messages
+      parameters:
+        - $ref: '#/components/parameters/ChatRoomIdPath'
+        - $ref: '#/components/parameters/OffsetPath'
+      responses:
+        '200':
+          $ref: '#/components/responses/GetChatMessagesResponse'
+    post:
+      tags: [chat]
+      summary: post chat room to message
+      operationId: PostChatRoomToMessage
+      description: post chat room to message
+      parameters: [$ref: '#/components/parameters/ChatRoomIdPath']
+      requestBody:
+        required: true
+        description: post message to chat room
+        content:
+          application/json:
+            schema:
+              type: object
+              title: PostChatRoomToMessageBody
+              required: [message]
+              properties:
+                message:
+                  type: string
+      responses:
+        '204':
+          description: SUCCESSFULL NO CONTENT
+  /health:
+    post:
+      tags: [chat]
+      summary: post check application health
+      operationId: post check application health
+      description: post check application health
+      responses:
+        '204':
+          description: SUCCESSFULL NO CONTENT
+components:
+  securitySchemes:
+    OAuth2:
+      type: oauth2
+      flows:
+        authorizationCode:
+          authorizationUrl: https://github.com/login/oauth/authorize
+          tokenUrl: https://github.com/login/oauth/access_token
+          scopes:
+            user: Read user info
+  parameters:
+    ChatRoomIdPath:
+      name: chatRoomId
+      in: path
+      required: true
+      schema:
+        type: string
+    WorkerIdPath:
+      name: workerId
+      in: path
+      required: true
+      schema:
+        type: string
+    UserIdPath:
+      name: userId
+      in: path
+      required: true
+      schema:
+        type: string
+    KeywordQuery:
+      name: keyword
+      in: query
+      schema:
+        type: string
+    QuestIdPath:
+      name: questId
+      in: path
+      required: true
+      schema:
+        type: string
+    RequesterPublicKey:
+      name: requesterPublicKey
+      in: query
+      description: Client's public key
+      schema:
+        type: string
+    WorkerPublicKey:
+      name: workerPublicKey
+      in: query
+      description: Worker's public key
+      schema:
+        type: string
+    OffsetPath:
+      name: offset
+      in: query
+      description: Number of items to skip before returning the results.
+      required: false
+      schema:
+        type: number
+        minimum: 0
+        default: 0
+  responses:
+    GetUsersResponse:
+      description: SUCCESSFUL
+      content:
+        application/json:
+          schema:
+            title: GetUsersResponseInner
+            type: object
+            required: [data, pageNation]
+            properties:
+              pageNation:
+                $ref: '#/components/schemas/PageNation'
+              data:
+                type: array
+                items:
+                  $ref: '#/components/schemas/User'
+    GetQuestsResponse:
+      description: SUCCESSFUL
+      content:
+        application/json:
+          schema:
+            title: GetQuestsResponseInner
+            type: object
+            required: [data, pageNation]
+            properties:
+              pageNation:
+                $ref: '#/components/schemas/PageNation'
+              data:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Quest'
+    GetChatRoomsResponse:
+      description: SUCCESSFUL
+      content:
+        application/json:
+          schema:
+            title: GetChatRoomsResponseInner
+            type: object
+            required: [data, pageNation]
+            properties:
+              pageNation:
+                $ref: '#/components/schemas/PageNation'
+              data:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ChatRoom'
+    GetChatMessagesResponse:
+      description: SUCCESSFUL
+      content:
+        application/json:
+          schema:
+            title: GetChatMessagesResponseInner
+            type: object
+            required: [data, pageNation]
+            properties:
+              pageNation:
+                $ref: '#/components/schemas/PageNation'
+              data:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ChatMessages'
+  requestBodies:
+    QuestUpdate:
+      required: true
+      description: post quest request body
+      content:
+        application/json:
+          schema:
+            type: object
+            title: QuestUpdateRequest
+            description: Differential information when creating or updating Quest
+            required: [title, description, reward, deadline]
+            properties:
+              title:
+                type: string
+              description:
+                type: string
+              deadline:
+                type: string
+                description: Delivery completion date（= Invalid Date of Secret Lock Transaction）
+                format: date-time
+              reward:
+                $ref: '#/components/schemas/Reward'
+    PutQuestApproval:
+      required: true
+      description: put quest approval request
+      content:
+        application/json:
+          schema:
+            type: object
+            required: [transactionHash]
+            properties:
+              transactionHash:
+                type: string
+                description: announced transaction hash
+    PostChatRoomRequest:
+      required: true
+      description: post chat room request
+      content:
+        application/json:
+          schema:
+            type: object
+            title: PostChatRoomRequestInner
+            required: [data]
+            properties:
+              data:
+                type: object
+                title: PostChatRoomRequestInnerData
+                required: [recipients]
+                properties:
+                  recipients:
+                    type: array
+                    items:
+                      type: string
+  schemas:
+    PageNation:
+      type: object
+      required:
+        - id
+        - total
+        - current
+        - last
+      properties:
+        total:
+          type: number
+        current:
+          type: number
+        last:
+          type: number
+    User:
+      type: object
+      required: [id, createdAt]
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        image:
+          type: string
+          description: base64 encoding
+        publicKey:
+          type: string
+          description: Symbol public key
+        createdAt:
+          type: string
+          description: UTC. If you have already canceled your membership, only publickey will remain, so it will be undefined.
+          format: date-time
+        email:
+          type: string
+          description: user email
+    ChainTypeEnum:
+      type: string
+      enum:
+        - XYM
+        - ETH
+    Reward:
+      type: object
+      required:
+        - chain
+        - currencyId
+        - amount
+      properties:
+        chain:
+          $ref: '#/components/schemas/ChainTypeEnum'
+        currencyId:
+          type: string
+          description: 'xym = mosaicId, eth = contract address'
+        amount:
+          type: number
+    Quest:
+      type: object
+      required:
+        - id
+        - title
+        - description
+        - workers
+        - status
+        - deadline
+        - ownerPublicKey
+        - createdAt
+        - updatedAt
+      properties:
+        id:
+          type: string
+          description: Quest ID
+        transactionHash:
+          type: string
+        title:
+          type: string
+        description:
+          type: string
+        reward:
+          $ref: '#/components/schemas/Reward'
+        owner:
+          $ref: '#/components/schemas/User'
+        ownerPublicKey:
+          type: string
+        workers:
+          type: array
+          items:
+            $ref: '#/components/schemas/QuestWorker'
+        status:
+          $ref: '#/components/schemas/QuestStatusEnum'
+        deadline:
+          type: string
+          description: Delivery completion date（= Invalid Date of Secret Lock Transaction）
+          format: date-time
+        createdAt:
+          type: string
+          description: UTC
+          format: date-time
+        updatedAt:
+          type: string
+          description: UTC
+          format: date-time
+    QuestStatusEnum:
+      type: string
+      enum: [WANTED, WORKING, COMPLETED, CANCELLED]
+    QuestWorker:
+      type: object
+      required: [id, questId, status, createdAt]
+      properties:
+        id:
+          type: string
+        userId:
+          type: string
+        questId:
+          type: string
+        status:
+          $ref: '#/components/schemas/QuestWorkerStatusEnum'
+        worker:
+          $ref: '#/components/schemas/User'
+        createdAt:
+          type: string
+          format: date-time
+    QuestWorkerStatusEnum:
+      type: string
+      enum: [APPLYING, ACCEPTED, COMPLETED, REJECTED]
+    WebPush:
+      type: object
+      properties:
+        endpoint:
+          type: string
+        expirationTime:
+          type: number
+          nullable: true
+        keys:
+          type: object
+          title: WebPushKeys
+          required: [p256dh, auth]
+          properties:
+            p256dh:
+              type: string
+            auth:
+              type: string
+    ChatRoom:
+      type: object
+      required:
+        - id
+        - createdAt
+        - lastPostedUserId
+        - updatedAt
+        - messages
+        - members
+        - isUnread
+      properties:
+        id:
+          type: string
+        createdAt:
+          type: string
+          format: date-time
+        lastPostedUserId:
+          type: string
+        updatedAt:
+          type: string
+          format: date-time
+        isUnread:
+          type: boolean
+          description: unread message exists current user
+        messages:
+          type: array
+          items:
+            type: object
+            title: ChatRoomMessage
+            required:
+              - id
+              - body
+              - createdAt
+            properties:
+              id:
+                type: string
+              body:
+                type: string
+              createdAt:
+                type: string
+                format: date-time
+              userId:
+                type: string
+        members:
+          type: array
+          items:
+            type: object
+            title: ChatRoomMember
+            required: [id]
+            properties:
+              id:
+                type: string
+              userId:
+                type: string
+              name:
+                type: string
+    ChatMessages:
+      type: object
+      required:
+        - id
+        - body
+        - createdAt
+      properties:
+        id:
+          type: string
+        body:
+          type: string
+        createdAt:
+          type: string
+          format: date-time
+        user:
+          $ref: '#/components/schemas/User'

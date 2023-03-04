@@ -1,0 +1,20 @@
+{
+  "name": "oas",
+  "description": "open api specification",
+  "version": "1.0.0",
+  "private": true,
+  "author": "ym.u.ichiro@gmail.com",
+  "license": "MIT",
+  "main": "./types/index.js",
+  "types": "./types/index.d.ts",
+  "files": [
+    "types",
+    "package.json"
+  ],
+  "scripts": {
+    "prebuild": "rm -rf ./types && rm -rf ./tmp",
+    "build": "TS_POST_PROCESS_FILE='../../node_modules/.bin/prettier --write' openapi-generator-cli generate -g typescript-fetch -i ./specification/v1.yml -o ./tmp --enable-post-process-file --global-property skipFormModel=false",
+    "postbuild": "tsc --outDir ./types",
+    "viewer": "swagger-viewer ./specification/v1.yml"
+  }
+}

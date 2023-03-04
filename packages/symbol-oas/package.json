@@ -1,0 +1,18 @@
+{
+  "name": "symbol-oas",
+  "version": "1.0.0",
+  "description": "open api specification for symbol rest api",
+  "main": "./types/index.js",
+  "types": "./types/index.d.ts",
+  "private": true,
+  "files": [
+    "types",
+    "package.json"
+  ],
+  "scripts": {
+    "prebuild": "rm -rf ./types",
+    "build": "TS_POST_PROCESS_FILE='../../node_modules/.bin/prettier --write' openapi-generator-cli generate -g typescript-fetch -i ./specification/openapi3.yml -o ./tmp --enable-post-process-file --global-property skipFormModel=true",
+    "postbuild": "tsc --outDir ./types",
+    "viewer": "swagger-viewer ./specification/openapi3.yml"
+  }
+}
