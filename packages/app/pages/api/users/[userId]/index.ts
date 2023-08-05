@@ -35,7 +35,7 @@ async function getRequest(req: NextApiRequest, res: NextApiResponse<User>) {
       image: true,
       createdAt: true,
       publicKey: true,
-      email: session?.user.id === userId ? true : undefined,
+      email: session?.user.id === userId ? true : false,
     },
     where: { id: userId },
   });
