@@ -1,8 +1,8 @@
+import { mosaicRoutesApi } from '@/services/InitOas';
+import { Mosaic } from 'symbol-oas/types/models';
 import { Address, PublicAccount } from 'symbol-sdk/dist/src/model/account';
 import { NetworkType } from 'symbol-sdk/dist/src/model/network';
-import { Mosaic } from 'symbol-oas/types/models';
 import { NetworkSymbol } from './NetworkSymbol';
-import { mosaicRoutesApi } from '@/services/InitOas';
 
 interface MosaicInfo {
   id: string;
@@ -18,6 +18,7 @@ export default class AccountBase {
 
   protected constructor(publicKey: string, networkType: NetworkType) {
     this.privateMessage = 'this is a private message!';
+    console.log({ publicKey, networkType });
     this.account = PublicAccount.createFromPublicKey(publicKey, networkType);
     this.networkType = networkType;
   }
@@ -50,15 +51,5 @@ export default class AccountBase {
       });
     }
     return parsedMosaics;
-  }
-
-  static isCorrectPublicKey(publicKey: string): boolean {
-    if (publicKey.length > 79 || publicKey.length < 19) return false;
-    try {
-      Address.createFromPublicKey(publicKey, NetworkType.MAIN_NET); // ネットワークタイプは考慮不要
-    } catch {
-      return false;
-    }
-    return true;
   }
 }
