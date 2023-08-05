@@ -134,7 +134,6 @@ export default function AccountPublicKey(props: P): JSX.Element {
   const handleGenerateNew = async () => {
     const network = new NetworkSymbol();
     const newAccount = AccountUser.generateNewAccount(network.networkType);
-    console.log(newAccount.publicKey, network.networkType);
     const userAccount = new AccountUser(newAccount.publicKey, network.networkType);
     const systemAccount: AccountSystem = new AccountSystem(network.networkType);
     const textData: string[] = [

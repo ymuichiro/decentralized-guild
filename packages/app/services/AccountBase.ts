@@ -18,7 +18,6 @@ export default class AccountBase {
 
   protected constructor(publicKey: string, networkType: NetworkType) {
     this.privateMessage = 'this is a private message!';
-    console.log({ publicKey, networkType });
     this.account = PublicAccount.createFromPublicKey(publicKey, networkType);
     this.networkType = networkType;
   }

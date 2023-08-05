@@ -3,11 +3,12 @@ import { EncryptedMessage } from 'symbol-sdk/dist/src/model/message';
 import { NetworkType } from 'symbol-sdk/dist/src/model/network';
 import AccountBase from './AccountBase';
 
-const systemPublicKey = process.env.NEXT_PUBLIC_SYMBOL_SYSTEM_PUBLICKEY;
-
 export class AccountSystem extends AccountBase {
   public constructor(networkType: NetworkType) {
-    super(systemPublicKey, networkType);
+    if (!process.env.NEXT_PUBLIC_SYMBOL_SYSTEM_PUBLICKEY) {
+      throw new Error('NEXT_PUBLIC_SYMBOL_SYSTEM_PUBLICKEY is not set');
+    }
+    super(process.env.NEXT_PUBLIC_SYMBOL_SYSTEM_PUBLICKEY, networkType);
   }
 
   /** only server side */
