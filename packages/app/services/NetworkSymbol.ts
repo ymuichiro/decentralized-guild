@@ -1,8 +1,4 @@
 import { NetworkType } from 'symbol-sdk/dist/src/model/network';
-
-const networkType =
-  Number(process.env.NEXT_PUBLIC_SYMBOL_NETWORKTYPE) === 104 ? NetworkType.MAIN_NET : NetworkType.TEST_NET;
-
 export class NetworkSymbol {
   public readonly nodeUrl: string;
   public readonly wsUrl: string;
@@ -17,7 +13,8 @@ export class NetworkSymbol {
   public constructor() {
     this.nodeUrl = process.env.NEXT_PUBLIC_SYMBOL_NODE;
     this.wsUrl = process.env.NEXT_PUBLIC_SYMBOL_NODE_WS;
-    this.networkType = networkType;
+    this.networkType =
+      Number(process.env.NEXT_PUBLIC_SYMBOL_NETWORKTYPE) === 104 ? NetworkType.MAIN_NET : NetworkType.TEST_NET;
     this.generationHashSeed = process.env.NEXT_PUBLIC_SYMBOL_GENERATION_HASH_SEED;
     this.epochAdjustment = Number(process.env.NEXT_PUBLIC_SYMBOL_EPOCH_ADJUSTMENT);
     this.currencyMosaicId = process.env.NEXT_PUBLIC_SYMBOL_CURRENCY_MOSAIC_ID;

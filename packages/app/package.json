@@ -10,9 +10,10 @@
   "scripts": {
     "dev": "prisma migrate dev --name main && next dev | pino-pretty",
     "build": "prisma migrate dev --name main && prisma migrate deploy && next build",
-    "start": "next start | pino-pretty",
+    "start": "next start",
     "test": "next lint && tsc --noEmit && prettier --write **/*.{js,json,ts,tsx}",
-    "init": "web-push generate-vapid-keys"
+    "init": "web-push generate-vapid-keys",
+    "prisma:deploy": "prisma migrate dev --name main && prisma migrate deploy"
   },
   "dependencies": {
     "@emotion/react": "^11.10.5",

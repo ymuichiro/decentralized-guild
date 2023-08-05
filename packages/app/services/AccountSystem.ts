@@ -12,7 +12,7 @@ export class AccountSystem extends AccountBase {
 
   /** only server side */
   public verifyEncryptedToken(payload: string, senderAccount: AccountBase): boolean {
-    if (process.env.SYMBOL_ADMIN_PRIVATEKEY) {
+    if (!process.env.SYMBOL_ADMIN_PRIVATEKEY) {
       throw new Error('SYMBOL_ADMIN_PRIVATEKEY is not set');
     }
 
