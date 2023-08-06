@@ -2,6 +2,7 @@ import spaces from '@/assets/backgrounds/blockchain.json';
 import Template from '@/components/templates/Template';
 import paths from '@/services/Navigaion';
 import Button from '@mui/material/Button';
+import Container from '@mui/material/Container';
 import Typography from '@mui/material/Typography';
 import Lottie from 'lottie-react';
 import { useSession } from 'next-auth/react';
@@ -23,31 +24,18 @@ export default function Home(): JSX.Element {
 
   return (
     <Template>
-      <div
-        className='center'
-        style={{
-          flexDirection: 'column',
-          gap: '3rem',
-          position: 'absolute',
-          zIndex: 1,
-          height: '100svh',
-          width: '100vw',
-        }}
-      >
-        <Typography
-          component='h1'
-          sx={{
-            whiteSpace: 'pre-wrap',
-            textAlign: 'center',
-            typography: { xs: 'h3', sm: 'h1', md: 'h1' },
-            maxWidth: '600px',
-          }}
-        >
-          Decentralized Guild
-        </Typography>
-        <Button color='primary' size='large' style={{ maxWidth: '90vw', minWidth: '250px' }} onClick={handleStart}>
-          Start Application
-        </Button>
+      <div className='center' style={{ position: 'absolute', zIndex: 1, height: '100svh', width: '100vw' }}>
+        <Container style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '2rem' }}>
+          <Typography
+            component='h1'
+            sx={{ whiteSpace: 'pre-wrap', textAlign: 'center', typography: { xs: 'h3', sm: 'h1', md: 'h1' } }}
+          >
+            Decentralized Guild
+          </Typography>
+          <Button color='primary' size='large' style={{ maxWidth: '90vw', minWidth: '250px' }} onClick={handleStart}>
+            Start Application
+          </Button>
+        </Container>
       </div>
       <div
         style={{

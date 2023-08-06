@@ -143,6 +143,8 @@ async function POST(req: NextApiRequest, res: NextApiResponse<Quest>) {
     },
   });
 
+  Logger.info('A new quest has been created', req, newQuestData);
+
   return res.status(200).json({
     id: newQuestData.id,
     createdAt: newQuestData.createdAt,

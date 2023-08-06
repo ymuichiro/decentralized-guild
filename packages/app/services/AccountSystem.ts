@@ -5,7 +5,6 @@ import AccountBase from './AccountBase';
 
 export class AccountSystem extends AccountBase {
   public constructor(networkType: NetworkType) {
-    console.log('NEXT_PUBLIC_SYMBOL_SYSTEM_PUBLICKEY', process.env.NEXT_PUBLIC_SYMBOL_SYSTEM_PUBLICKEY);
     if (!process.env.NEXT_PUBLIC_SYMBOL_SYSTEM_PUBLICKEY) {
       throw new Error('NEXT_PUBLIC_SYMBOL_SYSTEM_PUBLICKEY is not set');
     }

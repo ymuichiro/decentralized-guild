@@ -5,16 +5,31 @@
   "theme_color": "#000000",
   "background_color": "#000000",
   "start_url": "/",
+  "description": "Empower and Thrive Together",
   "icons": [
     {
-      "src": "/icons/icon-192-192.webp",
-      "sizes": "192x192",
-      "type": "image/webp"
+      "src": "/maskable_icon_x96.png",
+      "sizes": "96x96",
+      "type": "image/png",
+      "purpose": "any"
     },
     {
-      "src": "/icons/icon-512-512.webp",
+      "src": "/maskable_icon_x128.png",
+      "sizes": "128x128",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/maskable_icon_x192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/maskable_icon_x512.png",
       "sizes": "512x512",
-      "type": "image/webp"
+      "type": "image/png",
+      "purpose": "any"
     }
   ],
   "screenshots": [
@@ -24,6 +39,42 @@
       "type": "image/webp",
       "platform": "wide",
       "label": "Dashboard Screen"
+    },
+    {
+      "src": "/screenshot1.png",
+      "type": "image/png",
+      "sizes": "944x1380",
+      "form_factor": "narrow"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "dashboard",
+      "short_name": "open dashboard",
+      "description": "Open the dashboard",
+      "url": "/quest/dashboard",
+      "icons": [{ "src": "/maskable_icon_x192.png", "sizes": "192x192" }]
+    },
+    {
+      "name": "new quest",
+      "short_name": "create quest",
+      "description": "Create a quest",
+      "url": "/quest/create",
+      "icons": [{ "src": "/maskable_icon_x192.png", "sizes": "192x192" }]
+    },
+    {
+      "name": "notice",
+      "short_name": "view notice",
+      "description": "View notice",
+      "url": "/account/notice",
+      "icons": [{ "src": "/maskable_icon_x192.png", "sizes": "192x192" }]
+    },
+    {
+      "name": "config",
+      "short_name": "open config",
+      "description": "Open config",
+      "url": "/account",
+      "icons": [{ "src": "/maskable_icon_x192.png", "sizes": "192x192" }]
     }
   ]
 }

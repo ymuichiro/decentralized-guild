@@ -24,6 +24,7 @@ declare namespace NodeJS {
     readonly NEXT_PUBLIC_SYMBOL_NETWORKTYPE: string;
     readonly NEXT_PUBLIC_WEB_PUSH_PUBLIC_KEY: string;
     readonly NEXT_PUBLIC_SYSTEM_FEE: string;
+    readonly NEXT_PUBLIC_APP_URL: string;
     readonly MAIL_HOST: string;
     readonly MAIL_PORT: string;
     readonly MAIL_SECURE: string;
