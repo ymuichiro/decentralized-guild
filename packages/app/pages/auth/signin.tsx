@@ -1,4 +1,9 @@
+import DiscordIcon from '@/assets/icons/discord.svg';
+import GithubIcon from '@/assets/icons/github.svg';
+import GoogleIcon from '@/assets/icons/google.svg';
+import TwitterIcon from '@/assets/icons/twitter.svg';
 import AppLogo from '@/assets/logos/app-logo-dark.webp';
+import Link from '@/components/atom/Link';
 import Template from '@/components/templates/Template';
 import { authOptions } from '@/pages/api/auth/[...nextauth]';
 import paths from '@/services/Navigaion';
@@ -17,11 +22,15 @@ export default function SignIn({ providers }: InferGetServerSidePropsType<typeof
   const logoSwitch = (providerName: string) => {
     switch (providerName) {
       case 'Google':
-        return 'https://authjs.dev/img/providers/google.svg';
+        return GoogleIcon;
       case 'GitHub':
-        return 'https://authjs.dev/img/providers/github.svg';
+        return GithubIcon;
+      case 'Twitter':
+        return TwitterIcon;
+      case 'Discord':
+        return DiscordIcon;
       default:
-        return 'https://authjs.dev/img/providers/github.svg';
+        return GithubIcon;
     }
   };
 
@@ -39,24 +48,7 @@ export default function SignIn({ providers }: InferGetServerSidePropsType<typeof
               </Typography>
               <Divider style={{ width: '100%' }} />
               {Object.values(providers).map((provider) => {
-                if (provider.name === 'Credentials')
-                  // --- for test ---
-                  return (
-                    <div key={provider.name} style={{ display: 'flex', justifyContent: 'space-around' }}>
-                      <Button
-                        color='primary'
-                        onClick={() => signIn(provider.id, { callbackUrl: paths.quest.dashboard.href, token: 'aaa' })}
-                      >
-                        Test AAA
-                      </Button>
-                      <Button
-                        color='primary'
-                        onClick={() => signIn(provider.id, { callbackUrl: paths.quest.dashboard.href, token: 'bbb' })}
-                      >
-                        Test BBB
-                      </Button>
-                    </div>
-                  );
+                console.log(provider);
                 return (
                   <Button
                     key={provider.name + 'bbb'}
@@ -69,6 +61,14 @@ export default function SignIn({ providers }: InferGetServerSidePropsType<typeof
                   </Button>
                 );
               })}
+              <div>
+                <Link href={paths.terms.privacy.href} style={{ display: 'block' }}>
+                  Privacy Policy
+                </Link>
+                <Link href={paths.terms.terms.href} style={{ display: 'block' }}>
+                  Terms of Service
+                </Link>
+              </div>
             </CardContent>
           </Card>
         }

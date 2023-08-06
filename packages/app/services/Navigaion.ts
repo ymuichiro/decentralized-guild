@@ -4,6 +4,14 @@ const paths = {
       href: '/',
     },
   },
+  terms: {
+    privacy: {
+      href: '/terms/privacy-policy',
+    },
+    terms: {
+      href: '/terms/terms-of-service',
+    },
+  },
   account: {
     notice: {
       href: '/account/notice',

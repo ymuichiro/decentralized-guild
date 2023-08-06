@@ -14,6 +14,9 @@ export default function App({ Component, pageProps }: AppProps) {
     <>
       <Head>
         <meta name='viewport' content='width=device-width, initial-scale=1.0' />
+        <meta name='description' content='Empower and Thrive Together' />
+        <meta name='twitter:title' content='Decentralized Guild' />
+        <meta name='twitter:description' content='Empower and Thrive Together' />
         <meta name='twitter:card' content='summary_large_image' />
         <meta name='twitter:site' content='@faunsu19000' />
         <meta name='twitter:image' content={`${process.env.NEXT_PUBLIC_APP_URL || ''}/twitter-card.png`} />

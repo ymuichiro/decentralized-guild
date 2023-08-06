@@ -6,8 +6,10 @@ declare namespace NodeJS {
   interface ProcessEnv {
     readonly OAUTH_GITHUB_CLIENT_ID: string;
     readonly OAUTH_GITHUB_CLIENT_SECRET: string;
-    readonly OAUTH_GOOGLE_CLIENT_ID: string;
-    readonly OAUTH_GOOGLE_CLIENT_SECRET: string;
+    readonly OAUTH_DISCORD_CLIENT_ID: string;
+    readonly OAUTH_DISCORD_CLIENT_SECRET: string;
+    readonly OAUTH_TWITTER_CLIENT_ID: string;
+    readonly OAUTH_TWITTER_CLIENT_SECRET: string;
     readonly SYMBOL_ADMIN_PRIVATEKEY: string;
     readonly WEB_PUSH_PRIVATE_KEY: string;
     readonly WEB_PUSH_EMAIL: string;
